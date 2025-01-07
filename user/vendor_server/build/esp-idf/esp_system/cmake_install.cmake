@@ -39,6 +39,6 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("D:/esp32_c3/user/vendor_server/build/esp-idf/esp_system/port/cmake_install.cmake")
+  include("D:/github_project/unmanned_supermarket_2/user/vendor_server/build/esp-idf/esp_system/port/cmake_install.cmake")
 endif()
 

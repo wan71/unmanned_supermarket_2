@@ -3,7 +3,7 @@
     "idf.openOcdConfigs": [
         "board/esp32c3-ftdi.cfg"
     ],
-    "idf.portWin": "COM18",
+    "idf.portWin": "COM21",
     "files.associations": {
         "*.md": "markdown",
         "string": "c"

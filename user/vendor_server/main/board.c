@@ -11,7 +11,7 @@
 #include "driver/gpio.h"
 #include "esp_log.h"
 #include "board.h"
-
+#include "beep.h"
 #define TAG "BOARD"
 
 struct _led_state led_state[3] = {
@@ -47,6 +47,8 @@ static void board_led_init(void)
         gpio_set_level(led_state[i].pin, LED_OFF);
         led_state[i].previous = LED_OFF;
     }
+    esp_rom_gpio_pad_select_gpio(BUZZER_GPIO);
+    gpio_set_direction(BUZZER_GPIO, GPIO_MODE_OUTPUT);
 }
 
 void board_init(void)

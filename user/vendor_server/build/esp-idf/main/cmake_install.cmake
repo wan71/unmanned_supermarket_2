@@ -1,4 +1,4 @@
-# Install script for directory: D:/esp32_c3/user/vendor_server/main
+# Install script for directory: D:/github_project/unmanned_supermarket_2/user/vendor_server/main
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

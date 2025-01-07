@@ -11,7 +11,7 @@
 #define _BOARD_H_
 
 #include "driver/gpio.h"
-
+#include "beep.h"
 #if defined(CONFIG_BLE_MESH_ESP_WROOM_32)
 #define LED_R GPIO_NUM_25
 #define LED_G GPIO_NUM_26

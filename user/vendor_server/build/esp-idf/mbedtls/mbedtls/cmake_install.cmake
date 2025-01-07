@@ -39,9 +39,9 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("D:/esp32_c3/user/vendor_server/build/esp-idf/mbedtls/mbedtls/include/cmake_install.cmake")
-  include("D:/esp32_c3/user/vendor_server/build/esp-idf/mbedtls/mbedtls/3rdparty/cmake_install.cmake")
-  include("D:/esp32_c3/user/vendor_server/build/esp-idf/mbedtls/mbedtls/library/cmake_install.cmake")
+  include("D:/github_project/unmanned_supermarket_2/user/vendor_server/build/esp-idf/mbedtls/mbedtls/include/cmake_install.cmake")
+  include("D:/github_project/unmanned_supermarket_2/user/vendor_server/build/esp-idf/mbedtls/mbedtls/3rdparty/cmake_install.cmake")
+  include("D:/github_project/unmanned_supermarket_2/user/vendor_server/build/esp-idf/mbedtls/mbedtls/library/cmake_install.cmake")
 
 endif()
 

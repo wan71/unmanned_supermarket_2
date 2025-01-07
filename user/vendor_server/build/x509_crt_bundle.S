@@ -1,4 +1,4 @@
-/* * Data converted from D:/esp32_c3/user/vendor_server/build/esp-idf/mbedtls/x509_crt_bundle
+/* * Data converted from D:/github_project/unmanned_supermarket_2/user/vendor_server/build/esp-idf/mbedtls/x509_crt_bundle
  */
 .data
 .section .rodata.embedded

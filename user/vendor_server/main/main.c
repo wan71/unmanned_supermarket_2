@@ -23,19 +23,19 @@
 #include "driver/gpio.h"
 #include "rc522.h"
 
+
 #include "esp_ble_mesh_defs.h"
 #include "esp_ble_mesh_common_api.h"
 #include "esp_ble_mesh_networking_api.h"
 #include "esp_ble_mesh_provisioning_api.h"
 #include "esp_ble_mesh_config_model_api.h"
 #include "esp_ble_mesh_local_data_operation_api.h"
-
-
 #include "esp_bt_device.h"
-
 #include "board.h"
 #include "ble_mesh_example_init.h"
 #include "esp_random.h"
+#include "adc.h"
+#include "beep.h"
 // #include "esp_system.h" // 包含 esp_random() 的头文件
 #define TAG "EXAMPLE"
 #define CID_ESP     0x02E5
@@ -56,6 +56,8 @@
 #define BLUE_TIME_FAIL      10000
 #define CARD_NUMBER_LENGTH     8 // 模拟卡号的长度（8字节）
 #define CARD_MAC_LENGTH   6
+
+#define server_test 1     // 1代表是不是测试
     struct send_node_msg{
     uint8_t start;
     uint8_t id[CARD_MAC_LENGTH];
@@ -225,7 +227,8 @@ static void example_ble_mesh_custom_model_cb(esp_ble_mesh_model_cb_event_t event
             break;
         }
         else {
-             xSemaphoreGive(blue_public_state);
+            xSemaphoreGive(blue_public_state);
+            play_random_beat();
         }
         // printf("Message is from %d,Message:%s have been sent to the mesh network\r\n",param->client_recv_publish_msg.ctx->addr,param->client_recv_publish_msg.msg);
         ESP_LOGI(TAG, "Send 0x%06" PRIx32, param->model_send_comp.opcode);
@@ -270,9 +273,13 @@ static void uart_event_task(void *pvParameters)
     // memcpy(&card_msg.buffer,&card,CARD_NUMBER_LENGTH);
     for(;;)
     {
-    //  if (xSemaphoreTake(xBinarySemaphore, portMAX_DELAY) == pdTRUE) {
-    //         ESP_LOGI(TAG, "uart_event_task got the semaphore!");
-    //     }
+        if(server_test)
+        {
+            if (xSemaphoreTake(xBinarySemaphore, portMAX_DELAY) == pdTRUE) {
+            ESP_LOGI(TAG, "uart_event_task got the semaphore!");
+            }
+        }
+
 
     // 使用 esp_random() 生成随机数并取模
     card_msg.dif_num = (uint8_t)(esp_random() % 256); // 或者 msg->dif_num = esp_random() % 256;
@@ -288,11 +295,18 @@ static void uart_event_task(void *pvParameters)
              printf("0x%02X ", card_msg.buffer[i]);
         }
     printf("\n");
-    vTaskDelay(1000);
-    //  if (xSemaphoreTake(blue_public_state, BLUE_TIME_FAIL) == pdTRUE) {
-    //         ESP_LOGI(TAG, "uart_event_task got the semaphore!");
-    //     }
-    
+
+    if(!server_test)
+    {
+        vTaskDelay(1000);
+    }
+     if(server_test)
+     {
+        if (xSemaphoreTake(blue_public_state, BLUE_TIME_FAIL) == pdTRUE) {
+                ESP_LOGI(TAG, "uart_event_task got the semaphore!");
+            }
+     } 
+     
     }
 }
 
@@ -305,7 +319,7 @@ void get_meac(void)
 }
 
 
-static void rc522_handler(void* arg, esp_event_base_t base, int32_t event_id, void* event_data)
+void rc522_handler(void* arg, esp_event_base_t base, int32_t event_id, void* event_data)
 {
     rc522_event_data_t* data = (rc522_event_data_t*) event_data;
 
@@ -377,9 +391,6 @@ void app_main(void)
 
     // 初始释放一次信号量，避免任务1陷入死等
     xSemaphoreGive(blue_public_state);
-
-
-    
     get_meac();
        rc522_config_t config = {
         .spi.host = 1,/*VSPI_HOST*/
@@ -393,6 +404,10 @@ void app_main(void)
     rc522_start(scanner);
    
     xTaskCreate(uart_event_task, "uart_event_task", 2048, NULL, 12, NULL);
+    // Create a FreeRTOS task to read ADC values
+    xTaskCreate(adc_task, "ADC Task", 2048, NULL, 5, NULL);
+     // Create tasks
+    // xTaskCreate(buzzer_beep_task, "Buzzer Beep Task", 2048, NULL, 5, NULL);
 
 }
 
